@@ -32,33 +32,56 @@
 </div>
 
 <script>
+// Bersihkan token lama setiap kali halaman login dibuka,
+// supaya tidak ada token kadaluarsa nyangkut.
+localStorage.removeItem('token');
+
+function showAlert(message, type) {
+    document.getElementById('alert').innerHTML =
+        `<div class="alert alert-${type}">${message}</div>`;
+}
+
 function login() {
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
 
+    if (!email || !password) {
+        showAlert('Email dan password wajib diisi', 'warning');
+        return;
+    }
+
     fetch('/api/login', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
         },
         body: JSON.stringify({ email, password })
     })
-    .then(res => res.json())
+    .then(async res => {
+        const data = await res.json();
+        if (!res.ok) {
+            // Tampilkan pesan error asli dari server (401, 422, dll)
+            throw data.message || 'Login gagal';
+        }
+        return data;
+    })
     .then(data => {
         if (data.access_token) {
             localStorage.setItem('token', data.access_token);
-
-            document.getElementById('alert').innerHTML =
-                `<div class="alert alert-success">Login berhasil!</div>`;
+            showAlert('Login berhasil!', 'success');
 
             setTimeout(() => {
                 window.location.href = '/dashboard';
-            }, 1000);
+            }, 800);
         } else {
-            document.getElementById('alert').innerHTML =
-                `<div class="alert alert-danger">Login gagal!</div>`;
+            showAlert('Login gagal: token tidak diterima', 'danger');
         }
     })
+    .catch(err => {
+        console.log(err);
+        showAlert(typeof err === 'string' ? err : 'Terjadi kesalahan saat login', 'danger');
+    });
 }
 </script>
 

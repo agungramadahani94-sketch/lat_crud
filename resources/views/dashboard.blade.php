@@ -40,7 +40,8 @@ function getData() {
     let token = localStorage.getItem('token');
 
     if (!token) {
-        showAlert("Token tidak ada! Login dulu!", "danger");
+        showAlert("Token tidak ada! Mengalihkan ke halaman login...", "danger");
+        setTimeout(() => window.location.href = '/login-view', 1500);
         return;
     }
 
@@ -53,7 +54,11 @@ function getData() {
     })
     .then(res => {
         if (res.status === 401) {
-            throw "Unauthorized (Token salah / expired)";
+            // Token salah/expired -> hapus token & lempar ke login
+            localStorage.removeItem('token');
+            showAlert("Sesi habis / token tidak valid. Mengalihkan ke login...", "danger");
+            setTimeout(() => window.location.href = '/login-view', 1500);
+            throw new Error('Unauthorized');
         }
         return res.json();
     })
@@ -61,7 +66,7 @@ function getData() {
         let tbody = document.getElementById('tableBody');
         tbody.innerHTML = "";
 
-        if (data.length === 0) {
+        if (!Array.isArray(data) || data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="3" class="text-center">Data kosong</td></tr>`;
             return;
         }
@@ -78,13 +83,22 @@ function getData() {
     })
     .catch(err => {
         console.log(err);
-        showAlert(err, "danger");
     });
 }
 
 function logout() {
-    localStorage.removeItem('token');
-    window.location.href = '/login-view';
+    let token = localStorage.getItem('token');
+
+    fetch('/api/logout', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Accept': 'application/json'
+        }
+    }).finally(() => {
+        localStorage.removeItem('token');
+        window.location.href = '/login-view';
+    });
 }
 
 function showAlert(message, type) {

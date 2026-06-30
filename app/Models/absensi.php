@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class absensi extends Model
+class Absensi extends Model
 {
     protected $fillable = [
         'nama',
@@ -12,5 +12,4 @@ class absensi extends Model
         'kelas',
         'status',
     ];
-
 }

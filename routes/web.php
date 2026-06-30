@@ -14,6 +14,7 @@ Route::resource('absensi', AbsensiController::class);
 Route::get('/login-view', function () {
     return view('login');
 });
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 });
