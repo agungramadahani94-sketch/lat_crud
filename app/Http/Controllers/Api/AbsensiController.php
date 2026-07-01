@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Absensi;
 use Illuminate\Http\Request;
 
@@ -9,13 +10,7 @@ class AbsensiController extends Controller
 {
     public function index()
     {
-        $absensi = Absensi::all();
-        return view('absensi.index', compact('absensi'));
-    }
-
-    public function create()
-    {
-        return view('absensi.create');
+        return response()->json(Absensi::all());
     }
 
     public function store(Request $request)
@@ -27,20 +22,14 @@ class AbsensiController extends Controller
             'status' => 'required|in:absen,alpa,sakit',
         ]);
 
-        Absensi::create($data);
+        $absensi = Absensi::create($data);
 
-        return redirect()->route('absensi.index')
-            ->with('success', 'Data berhasil ditambahkan');
+        return response()->json($absensi, 201);
     }
 
     public function show(Absensi $absensi)
     {
-        return view('absensi.show', compact('absensi'));
-    }
-
-    public function edit(Absensi $absensi)
-    {
-        return view('absensi.edit', compact('absensi'));
+        return response()->json($absensi);
     }
 
     public function update(Request $request, Absensi $absensi)
@@ -54,15 +43,13 @@ class AbsensiController extends Controller
 
         $absensi->update($data);
 
-        return redirect()->route('absensi.index')
-            ->with('success', 'Data berhasil diupdate');
+        return response()->json($absensi);
     }
 
     public function destroy(Absensi $absensi)
     {
         $absensi->delete();
 
-        return redirect()->route('absensi.index')
-            ->with('success', 'Data berhasil dihapus');
+        return response()->json(['message' => 'Data berhasil dihapus']);
     }
 }

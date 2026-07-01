@@ -44,7 +44,7 @@
                                 <td>{{ $item->status }}</td>
 
                                 <td>
-                                    <a href="{{ route('absensi.edit', $item->id) }}" class="btn btn-warning btn-sm"></a>
+                                    <a href="{{ route('absensi.edit', $item->id) }}" class="btn btn-warning btn-sm">
                                         Edit
                                     </a>
 
@@ -61,7 +61,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center">Data kosong</td>
+                                <td colspan="6" class="text-center">Data kosong</td>
                             </tr>
                         @endforelse
                     </tbody>

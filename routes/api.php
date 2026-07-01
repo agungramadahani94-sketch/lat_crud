@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\Api\AbsensiController;
 use Illuminate\Support\Facades\Route;
 
 // LOGIN (PUBLIC)
